@@ -42,4 +42,3 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 
 // Crear el controller de Pokemon
 // Crear el usuario JWT con token
-// Añadir mas funciones al pokemon service

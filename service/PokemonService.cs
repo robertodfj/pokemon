@@ -18,6 +18,10 @@ namespace Pokemon.service
 
         public async Task<PokemonResponseDTO> CreatePokemon(CreatePokemonDTO createPokemonDTO, int userId)
         {
+            if(HasUserPokemon(createPokemonDTO.PokemonApiId, userId).Result)
+            {
+                throw new Exception("User already has this pokemon.");
+            }
             // Obtener el pokemomn de la API externa
                 // Primero obtengo los daos princiopales del pokemon
                 var apiResponse = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{createPokemonDTO.PokemonApiId}");
@@ -75,6 +79,24 @@ namespace Pokemon.service
                 Level = p.Level,
                 OwnerId = p.OwnerId
             }).ToList();
+        }
+
+        public async Task<bool> DeletePokemon(int pokemonId, int userId)
+        {
+            var pokemon = await _context.Pokemons.FirstOrDefaultAsync(p => p.Id == pokemonId && p.OwnerId == userId);
+            if (pokemon == null)
+            {
+                return false;
+            }
+
+            _context.Pokemons.Remove(pokemon);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> HasUserPokemon(int pokemonId, int userId)
+        {
+            return await _context.Pokemons.AnyAsync(p => p.Id == pokemonId && p.OwnerId == userId);
         }
     }
 }

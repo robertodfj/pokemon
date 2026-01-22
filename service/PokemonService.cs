@@ -18,9 +18,13 @@ namespace Pokemon.service
 
         public async Task<PokemonResponseDTO> CreatePokemon(CreatePokemonDTO createPokemonDTO, int userId)
         {
-            if(HasUserPokemon(createPokemonDTO.PokemonApiId, userId).Result)
+            if(await HasUserPokemon(createPokemonDTO.PokemonApiId, userId))
             {
                 throw new Exception("User already has this pokemon.");
+            }
+            if(CaptureSuccess(createPokemonDTO.Level) == false)
+            {
+                throw new Exception("Pokemon capture failed.");
             }
             // Obtener el pokemomn de la API externa
                 // Primero obtengo los daos princiopales del pokemon
@@ -97,6 +101,13 @@ namespace Pokemon.service
         public async Task<bool> HasUserPokemon(int pokemonId, int userId)
         {
             return await _context.Pokemons.AnyAsync(p => p.Id == pokemonId && p.OwnerId == userId);
+        }
+
+        public bool CaptureSuccess(int PokemonLevel)
+        {
+            var captureChance = Math.Max(20, 100 - PokemonLevel); // A mayor nivel, menor probabilidad
+            var roll = Random.Shared.Next(1, 101); // El % va de 1 a 100
+            return roll <= captureChance;
         }
     }
 }

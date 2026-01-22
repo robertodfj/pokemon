@@ -39,3 +39,7 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+
+// Crear el controller de Pokemon
+// Crear el usuario JWT con token
+// Añadir mas funciones al pokemon service

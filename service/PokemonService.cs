@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Pokemon.data;
 using Pokemon.dto;
+using Microsoft.EntityFrameworkCore;
 
 namespace Pokemon.service
 {
@@ -58,6 +59,22 @@ namespace Pokemon.service
                 Level = newPokemon.Level,
                 OwnerId = userId
             };
+        }
+
+        public async Task<List<PokemonResponseDTO>> GetPokemonsByUserId(int userId)
+        {
+            var pokemons = await _context.Pokemons.Where(p => p.OwnerId == userId).ToListAsync();
+
+            return pokemons.Select(p => new PokemonResponseDTO()
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Category = p.Category,
+                ImageURL = p.ImageURL,
+                IsShiny = p.IsShiny,
+                Level = p.Level,
+                OwnerId = p.OwnerId
+            }).ToList();
         }
     }
 }

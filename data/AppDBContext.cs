@@ -9,5 +9,6 @@ namespace Pokemon.data
         }
 
         public DbSet<model.Pokemon> Pokemons { get; set; }
+        public DbSet<model.User> Users { get; set; }
     }
 }

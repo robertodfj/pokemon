@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pokemon.dto.auth;
 using Pokemon.service.auth;
@@ -35,6 +36,17 @@ namespace Pokemon.controller.auth
             await _authService.RegisterUser(registerDto);
 
             return Ok(new { message = "User registered successfully" });
+        }
+
+        [HttpPost("register-admin")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDTO registerDto)
+        {
+            _logger.LogInformation("Attempting to register admin: {Email}", registerDto.Email);
+
+            await _authService.RegisterAdmin(registerDto);
+
+            return Ok(new { message = "Admin registered successfully" });
         }
     }
 }

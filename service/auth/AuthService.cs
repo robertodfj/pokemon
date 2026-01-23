@@ -51,5 +51,28 @@ namespace Pokemon.service.auth
             }
             return new GenerateToken().CreateToken(user, _configuration);
         }
+
+        public async Task RegisterAdmin(RegisterDTO registerDTO)
+        {
+            var userExists = await _context.Users.AnyAsync(u => u.Email == registerDTO.Email);
+            if (userExists)
+            {
+                throw new Exception("User already exists");
+            }
+            if (registerDTO.Password != registerDTO.ConfirmPassword)
+            {
+                throw new Exception("Passwords do not match");
+            }
+            var user = new User
+            {
+                Email = registerDTO.Email,
+                UserName = Regex.Replace(registerDTO.Email.Split('@')[0], @"[^a-zA-Z0-9]", ""),
+                Password = BCrypt.Net.BCrypt.HashPassword(registerDTO.Password),
+                Role = "Admin"
+            };
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+
+        }
     }
 }

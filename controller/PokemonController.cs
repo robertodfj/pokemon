@@ -55,9 +55,9 @@ namespace Pokemon.controller
             return Ok(result);
         }
 
-        [HttpDelete("release")]
+        [HttpDelete("release/{PokemonID}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ReleasePokemon([FromBody] int PokemonID)
+        public async Task<IActionResult> ReleasePokemon(int PokemonID)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier);
 

@@ -48,9 +48,27 @@ namespace Pokemon.controller
                 return Unauthorized("Invalid user ID.");
             }
 
-            _logger.LogInformation("Capturing new Pokemon: {Name} by user {UserId}", createPokemonDTO.Name, userId.Value);
+            _logger.LogInformation("Capturing new Pokemon by user {UserId}", userId.Value);
 
             var result = await _pokemonService.CreatePokemon(createPokemonDTO, int.Parse(userId.Value));
+
+            return Ok(result);
+        }
+
+        [HttpDelete("release")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ReleasePokemon([FromBody] int PokemonID)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized("Invalid user ID.");
+            }
+
+            _logger.LogInformation("Releasing Pokemon: {PokemonId} by user {UserId}", PokemonID, userId.Value);
+
+            var result = await _pokemonService.DeletePokemon(PokemonID, int.Parse(userId.Value));
 
             return Ok(result);
         }

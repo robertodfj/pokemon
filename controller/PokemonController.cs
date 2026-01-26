@@ -19,6 +19,24 @@ namespace Pokemon.controller
             _logger = logger;
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetUserPokemons()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized("Invalid user ID.");
+            }
+
+            _logger.LogInformation("Fetching Pokemons for user {UserId}", userId.Value);
+
+            var pokemons = await _pokemonService.GetPokemonsByUserId(int.Parse(userId.Value));
+
+            return Ok(pokemons);
+        }
+
         [HttpPost("capture")]
         [Authorize]
         public async Task<IActionResult> CapturePokemon([FromBody] CreatePokemonDTO createPokemonDTO)

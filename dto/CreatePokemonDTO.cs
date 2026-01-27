@@ -12,7 +12,6 @@ namespace Pokemon.dto
         [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]
         public string Name { get; set; }
 
-        [Required]
         public bool IsShiny { get; set; }
 
         [Required]

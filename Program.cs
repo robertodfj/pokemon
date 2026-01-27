@@ -40,4 +40,6 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
-// Crear el controller de Pokemon
+// Crear el program cs
+// Crear las migraciones
+// Crear mas endpoints y servicio en pokemon.service

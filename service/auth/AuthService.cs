@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Pokemon.data;
 using Pokemon.dto.auth;
+using Pokemon.middleware.custom_exception;
 using Pokemon.model;
 using Pokemon.token;
 
@@ -20,15 +21,7 @@ namespace Pokemon.service.auth
 
         public async Task<bool> RegisterUser(RegisterDTO registerDTO)
         {
-            var userExists = await _context.Users.AnyAsync(u => u.Email == registerDTO.Email);
-            if (userExists)
-            {
-                throw new Exception("User already exists");
-            }
-            if (registerDTO.Password != registerDTO.ConfirmPassword)
-            {
-                throw new Exception("Passwords do not match");
-            }
+            await ValidateRegister(registerDTO);
             var user = new User
             {
                 Email = registerDTO.Email,
@@ -47,22 +40,14 @@ namespace Pokemon.service.auth
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDTO.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.Password))
             {
-                throw new Exception("Invalid email or password");
+                throw new UnauthorizedException("Invalid email or password");
             }
             return new GenerateToken().CreateToken(user, _configuration);
         }
 
         public async Task RegisterAdmin(RegisterDTO registerDTO)
         {
-            var userExists = await _context.Users.AnyAsync(u => u.Email == registerDTO.Email);
-            if (userExists)
-            {
-                throw new Exception("User already exists");
-            }
-            if (registerDTO.Password != registerDTO.ConfirmPassword)
-            {
-                throw new Exception("Passwords do not match");
-            }
+            await ValidateRegister(registerDTO);
             var user = new User
             {
                 Email = registerDTO.Email,
@@ -73,6 +58,15 @@ namespace Pokemon.service.auth
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
+        }
+
+        private async Task ValidateRegister(RegisterDTO dto)
+        {
+            if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
+                throw new ConflictException("User already exists");
+
+            if (dto.Password != dto.ConfirmPassword)
+                throw new ConflictException("Passwords do not match");
         }
     }
 }

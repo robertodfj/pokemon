@@ -2,6 +2,7 @@ using System.Text.Json;
 using Pokemon.data;
 using Pokemon.dto;
 using Microsoft.EntityFrameworkCore;
+using Pokemon.middleware.custom_exception;
 
 namespace Pokemon.service
 {
@@ -20,11 +21,11 @@ namespace Pokemon.service
         {
             if(await HasUserPokemon(createPokemonDTO.PokemonApiId, userId))
             {
-                throw new Exception("User already has this pokemon.");
+                throw new ConflictException("User already has this pokemon.");
             }
             if(CaptureSuccess(createPokemonDTO.Level) == false)
             {
-                throw new Exception("Pokemon capture failed.");
+                throw new BadRequestException("Pokemon capture failed.");
             }
             // Obtener el pokemomn de la API externa
                 // Primero obtengo los daos princiopales del pokemon

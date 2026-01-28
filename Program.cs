@@ -42,4 +42,3 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 
 // Crear el program cs
 // Crear las migraciones
-// Crear mas endpoints y servicio en pokemon.service

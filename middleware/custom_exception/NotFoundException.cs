@@ -1,4 +1,4 @@
-namespace Pokemon.middleware
+namespace Pokemon.middleware.custom_exception
 {
     public class NotFoundException : ApiException
     {

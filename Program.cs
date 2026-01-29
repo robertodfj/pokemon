@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Pokemon.data;
 using Pokemon.service;
 using Pokemon.service.auth;
@@ -19,30 +20,34 @@ builder.Services.AddScoped<GenerateToken>();
 // Añadimos el JWT
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = "JwtBearerDefaults.AuthenticationScheme";
-    options.DefaultChallengeScheme = "JwtBearerDefaults.AuthenticationScheme";
-}).AddJwtBearer("Jwt ", options =>
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = ValidateToken.GetTokenValidationParameters(builder.Configuration);
 });
 
-// Añadimos la autorizacion
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
-    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
-});
-
-// Añadimos el Seed Data
-
-
-
 var app = builder.Build();
 
+// Usar el seed data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDBContext>();
+    SeedData seedData = new SeedData(context, services.GetRequiredService<ILogger<SeedData>>());
+    seedData.SeedDatabase();
+}
+app.UseMiddleware<Exception>();
+
 app.UseHttpsRedirection();
-app.MapControllers();
+
+app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
+
 
 
 app.Run();

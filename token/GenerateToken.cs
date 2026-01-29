@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Pokemon.model;
 
@@ -27,6 +28,21 @@ namespace Pokemon.token
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public static TokenValidationParameters GetTokenValidationParameters(IConfiguration configuration)
+        {
+            return new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(configuration["AppSettings:Token"])
+                ),
+                ClockSkew = TimeSpan.Zero
+            };
         }
     }
 }

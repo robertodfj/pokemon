@@ -4,6 +4,7 @@ using Pokemon.data;
 using Pokemon.service;
 using Pokemon.service.auth;
 using Pokemon.token;
+using Pokemon.middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -16,6 +17,9 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<PokemonService>();
 builder.Services.AddScoped<GenerateToken>();
+
+builder.Services.AddLogging();
+builder.Services.AddHttpClient();
 
 // Añadimos el JWT
 builder.Services.AddAuthentication(options =>
@@ -37,7 +41,7 @@ using (var scope = app.Services.CreateScope())
     SeedData seedData = new SeedData(context, services.GetRequiredService<ILogger<SeedData>>());
     seedData.SeedDatabase();
 }
-app.UseMiddleware<Exception>();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

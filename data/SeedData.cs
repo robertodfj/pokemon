@@ -13,6 +13,12 @@ namespace Pokemon.data
             _logger = logger;
         }
 
+        // Creamos seed Data base, solo tenemos un metodo en este momento pero asi solo tendremos que añadir aqui l metodo sin nada mas
+        public void SeedDatabase()
+        {
+            CreateFirstAdmin();
+        }
+
         public void CreateFirstAdmin()
         {
             var adminExists = _context.Users.Any(u => u.Role == "Admin");

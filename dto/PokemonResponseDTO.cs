@@ -10,15 +10,14 @@ namespace Pokemon.dto
 
         [Required]
         [MaxLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [Required]
-        public string Category { get; set; }
+        public required string Category { get; set; }
 
         [Required]
         [Url(ErrorMessage = "ImageURL must be a valid URL.")]
-        public string ImageURL { get; set; }
-
+        public required string ImageURL { get; set; }
         public bool IsShiny { get; set; }
         
         [Required]

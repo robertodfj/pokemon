@@ -6,6 +6,11 @@ namespace Pokemon.token
     {
         public static TokenValidationParameters GetTokenValidationParameters(IConfiguration configuration)
         {
+
+            var tokenKey = configuration["AppSettings:Token"];
+            if (string.IsNullOrEmpty(tokenKey))
+                throw new Exception("JWT token key is not configured in AppSettings:Token");
+
             return new TokenValidationParameters
             {
                 ValidateIssuer = false,
@@ -13,7 +18,7 @@ namespace Pokemon.token
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    System.Text.Encoding.UTF8.GetBytes(configuration["AppSettings:Token"])
+                    System.Text.Encoding.UTF8.GetBytes(tokenKey)
                 ),
                 ClockSkew = TimeSpan.Zero
             };

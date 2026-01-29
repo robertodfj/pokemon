@@ -19,36 +19,47 @@ namespace Pokemon.service
 
         public async Task<PokemonResponseDTO> CreatePokemon(CreatePokemonDTO createPokemonDTO, int userId)
         {
-            if(await HasUserPokemon(createPokemonDTO.PokemonApiId, userId))
+            if (await HasUserPokemon(createPokemonDTO.PokemonApiId, userId))
             {
                 throw new ConflictException("User already has this pokemon.");
             }
-            if(CaptureSuccess(createPokemonDTO.Level) == false)
+            if (CaptureSuccess(createPokemonDTO.Level) == false)
             {
                 throw new BadRequestException("Pokemon capture failed.");
             }
             // Obtener el pokemomn de la API externa
-                // Primero obtengo los daos princiopales del pokemon
-                var apiResponse = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{createPokemonDTO.PokemonApiId}");
-                apiResponse.EnsureSuccessStatusCode();
-                var jsonResponse = await apiResponse.Content.ReadAsStringAsync();
-                var pokemonApi = JsonSerializer.Deserialize<PokemonApiDTO>(jsonResponse, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-                // Segundo obtengo la categoria / especie del pokemon
-                var apiResponseSpecies = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon-species/{createPokemonDTO.PokemonApiId}");
-                apiResponseSpecies.EnsureSuccessStatusCode();
-                var jsonResponseSpecies = await apiResponseSpecies.Content.ReadAsStringAsync();
-                var pokemonSpeciesApi = JsonSerializer.Deserialize<PokemonSpeciesDTO>(jsonResponseSpecies, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+            // Primero obtengo los daos princiopales del pokemon
+            var apiResponse = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon/{createPokemonDTO.PokemonApiId}");
+            apiResponse.EnsureSuccessStatusCode();
+            var jsonResponse = await apiResponse.Content.ReadAsStringAsync();
+            var pokemonApi = JsonSerializer.Deserialize<PokemonApiDTO>(jsonResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            // Segundo obtengo la categoria / especie del pokemon
+            var apiResponseSpecies = await _httpClient.GetAsync($"https://pokeapi.co/api/v2/pokemon-species/{createPokemonDTO.PokemonApiId}");
+            apiResponseSpecies.EnsureSuccessStatusCode();
+            var jsonResponseSpecies = await apiResponseSpecies.Content.ReadAsStringAsync();
+            var pokemonSpeciesApi = JsonSerializer.Deserialize<PokemonSpeciesDTO>(jsonResponseSpecies, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            
             // Guardar el pokemon en la db
+            if (pokemonApi == null || pokemonApi.Sprites == null)
+                throw new BadRequestException("Failed to fetch Pokemon data from API.");
+            if (pokemonSpeciesApi == null)
+                throw new BadRequestException("Failed to fetch Pokemon species data.");
+            if (pokemonSpeciesApi == null)
+                throw new BadRequestException("Failed to fetch Pokemon species data.");
+
+            var category = pokemonSpeciesApi.Genera
+                  .FirstOrDefault(g => g.Language.Name == "en")?.Genus ?? "Unknown";    
+    
             var newPokemon = new model.Pokemon()
             {
                 Name = pokemonApi.Name,
-                Category = pokemonSpeciesApi.Genera.FirstOrDefault(g => g.Language.Name == "en")?.Genus,
+                Category = category,
                 ImageURL = createPokemonDTO.IsShiny ? pokemonApi.Sprites.Front_Shiny : pokemonApi.Sprites.Front_Default,
                 IsShiny = createPokemonDTO.IsShiny,
                 Level = createPokemonDTO.Level,
@@ -56,7 +67,7 @@ namespace Pokemon.service
             };
             _context.Pokemons.Add(newPokemon);
             await _context.SaveChangesAsync();
-            
+
             // Hacer el retorno de la respuesta con el DTO
             return new PokemonResponseDTO()
             {

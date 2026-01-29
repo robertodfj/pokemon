@@ -17,8 +17,14 @@ namespace Pokemon.token
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role)
             };
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                configuration.GetSection("AppSettings:Token").Value));
+
+            var tokenkey = configuration.GetSection("AppSettings:Token").Value;
+            if (tokenkey == null)
+            {
+                throw new Exception("Token key is not configured.");
+            }
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(tokenkey));
+            
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

@@ -16,14 +16,35 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<PokemonService>();
 builder.Services.AddScoped<GenerateToken>();
 
+// Añadimos el JWT
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "JwtBearerDefaults.AuthenticationScheme";
+    options.DefaultChallengeScheme = "JwtBearerDefaults.AuthenticationScheme";
+}).AddJwtBearer("Jwt ", options =>
+{
+    options.TokenValidationParameters = ValidateToken.GetTokenValidationParameters(builder.Configuration);
+});
+
+// Añadimos la autorizacion
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+});
+
+// Añadimos el Seed Data
+
 
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
+app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 
 
 app.Run();
 
 
-// Crear el program cs
-// Crear las migraciones

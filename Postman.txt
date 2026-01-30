@@ -1,6 +1,25 @@
 PRUBAS REALIZADAS EN POSTMAN
 
 1. Prueba de registro de usuario:
+    POST http://localhost:5039/auth/register
+        {
+        "email": "usuario1@example.com",
+        "password": "SuperSecreta123!",
+        "confirmPassword": "SuperSecreta123!"
+        }
     - Usuario registrado correctamente
     - Error 409 si el usuario ya existe con ese email
     - Error 400 si las contraseñas no coinciden
+
+2. Prueba de login 
+    POST http://localhost:5039/auth/login
+        {
+        "email": "usuario1@example.com",
+        "password": "SuperSecreta123!"
+        }
+    RESPUESTA 200OK:
+    {
+    "token": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXN1YXJpbzEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ1c3VhcmlvMUBleGFtcGxlLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3Njk3NzA1Mzh9.cWN2wJBLl1hZnkOmdvsDRVAXrhnqklncdy1bAr-wmQyI7IgN0wtnRdTzRu0sBNi2BpEDDiypPOcZJHU1RBTvWg"
+    }
+    - Usuario hace login correctamente
+    - Error 401 si no existe email y password

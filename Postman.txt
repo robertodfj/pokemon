@@ -1,0 +1,6 @@
+PRUBAS REALIZADAS EN POSTMAN
+
+1. Prueba de registro de usuario:
+    - Usuario registrado correctamente
+    - Error 409 si el usuario ya existe con ese email
+    - Error 400 si las contraseñas no coinciden

@@ -1,56 +1,103 @@
 PRUBAS REALIZADAS EN POSTMAN
 
-1. Prueba de registro de usuario:
-    POST http://localhost:5039/auth/register
-        {
-        "email": "usuario1@example.com",
-        "password": "SuperSecreta123!",
-        "confirmPassword": "SuperSecreta123!"
-        }
-    - Usuario registrado correctamente
-    - Error 409 si el usuario ya existe con ese email
-    - Error 400 si las contraseñas no coinciden
+1. PRUEBAS DE AUTH (LOGIN / REGISTER)
+    1.1. Prueba de registro de usuario:
+        POST http://localhost:5039/auth/register
+            {
+            "email": "usuario1@example.com",
+            "password": "SuperSecreta123!",
+            "confirmPassword": "SuperSecreta123!"
+            }
+        - Usuario registrado correctamente
+        - Error 409 si el usuario ya existe con ese email
+        - Error 400 si las contraseñas no coinciden
 
-    1.1 Prueba de Registro de admin
-    POST http://localhost:5039/auth/register
+        1.1.1 Prueba de Registro de admin
+        POST http://localhost:5039/auth/register
+            {
+            "email": "admin1@example.com",
+            "password": "SuperSecreta123!",
+            "confirmPassword": "SuperSecreta123!"
+            }
+        - 200 OK:
         {
-        "email": "admin1@example.com",
-        "password": "SuperSecreta123!",
-        "confirmPassword": "SuperSecreta123!"
+        "message": "User registered successfully"
         }
-    - 200 OK:
-    {
-    "message": "User registered successfully"
-    }
-    - OJO ** HAY QUE PASAR EL TOKEN DE UN ADMIN PARA PODER REGISTRAR OTRO **
-    - Validaciones funcionando como antes
+        - OJO ** HAY QUE PASAR EL TOKEN DE UN ADMIN PARA PODER REGISTRAR OTRO **
+        - Validaciones funcionando como antes
 
-2. Prueba de login 
-    POST http://localhost:5039/auth/login
+    1.2 Prueba de login 
+        POST http://localhost:5039/auth/login
+            {
+            "email": "usuario1@example.com",
+            "password": "SuperSecreta123!"
+            }
+        RESPUESTA 200OK:
         {
-        "email": "usuario1@example.com",
-        "password": "SuperSecreta123!"
+        "token": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXN1YXJpbzEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ1c3VhcmlvMUBleGFtcGxlLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3Njk3NzA1Mzh9.cWN2wJBLl1hZnkOmdvsDRVAXrhnqklncdy1bAr-wmQyI7IgN0wtnRdTzRu0sBNi2BpEDDiypPOcZJHU1RBTvWg"
         }
-    RESPUESTA 200OK:
-    {
-    "token": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXN1YXJpbzEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ1c3VhcmlvMUBleGFtcGxlLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3Njk3NzA1Mzh9.cWN2wJBLl1hZnkOmdvsDRVAXrhnqklncdy1bAr-wmQyI7IgN0wtnRdTzRu0sBNi2BpEDDiypPOcZJHU1RBTvWg"
-    }
-    - Usuario hace login correctamente
-    - Error 401 si no existe email y password
+        - Usuario hace login correctamente
+        - Error 401 si no existe email y password
 
-    2.1 Prueba login admin
+        1.2.1 Prueba login admin
+        {
+        "email": "admin@pokemon.com",
+        "password": "admin123"
+        }
+        - Aparece actualmente error 400: 
+            "The field Password must be a string with a minimum length of 13 and a maximum length of 50."
+            Este error ocurre por que en el SeedData añadimos la contraseña del admin y es muy 
+            pequeña para las validaciones dto
+        - Cambiamos las validaciones de login DTO, (En login no es necesario validaciones de longitud)
+        Respuesta 200 OK:
+        {
+            "token": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkBwb2tlbW9uLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzY5NzcxMDY4fQ.aJzJs8j7zKn5B6wbJu3_qW72hqBI39S4BGKG2mdne4pLVpHh138VPzyTRW_GOhGJerf-nowp0T6BeUhsccZhdg"
+        }
+        - Validaciones funcionando igual que en el login normal
+
+2. PRUEBAS DE POKEMON (CAPTURAR / VER POEKMON DE USUARIO / LIBERAR POKEMON)
+2.1 Prueba captura de pokemon:
+    POST http://localhost:5039/pokemon/capture
+    -200 OK:
     {
-    "email": "admin@pokemon.com",
-    "password": "admin123"
+    "id": 1,
+    "name": "bulbasaur",
+    "category": "Seed Pokémon",
+    "imageURL": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+    "isShiny": false,
+    "level": 1,
+    "ownerId": 2
     }
-    - Aparece actualmente error 400: 
-        "The field Password must be a string with a minimum length of 13 and a maximum length of 50."
-        Este error ocurre por que en el SeedData añadimos la contraseña del admin y es muy 
-        pequeña para las validaciones dto
-    - Cambiamos las validaciones de login DTO, (En login no es necesario validaciones de longitud)
-    Respuesta 200 OK:
+    - Comprobadas validaciones, es necesario poner todos los campos
+    - 409 Conflict si el usuario ya tiene el pokemon:
     {
-        "token": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkBwb2tlbW9uLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzY5NzcxMDY4fQ.aJzJs8j7zKn5B6wbJu3_qW72hqBI39S4BGKG2mdne4pLVpHh138VPzyTRW_GOhGJerf-nowp0T6BeUhsccZhdg"
+    "message": "User already has this pokemon."
     }
-    - Validaciones funcionando igual que en el login normal
-    
+    - 400 Bad request si el algoritmo no captura el pokemon:
+    {
+    "message": "Pokemon capture failed."
+    }
+2.2 Prueba ver los pokemon del usuario
+    GET http://localhost:5039/pokemon
+    - 200OK:
+    [
+    {
+        "id": 1,
+        "name": "bulbasaur",
+        "category": "Seed Pokémon",
+        "imageURL": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+        "isShiny": false,
+        "level": 1,
+        "ownerId": 2
+    },
+    {
+        "id": 2,
+        "name": "ivysaur",
+        "category": "Seed Pokémon",
+        "imageURL": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/2.png",
+        "isShiny": true,
+        "level": 60,
+        "ownerId": 2
+    }
+    ]
+    - ERROR DETECTADO: 401 Si el token esta caducado no dice nada, solo error

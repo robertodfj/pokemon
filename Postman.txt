@@ -1,4 +1,4 @@
-PRUBAS REALIZADAS EN POSTMAN
+*** PRUBAS REALIZADAS EN POSTMAN *** 
 
 1. PRUEBAS DE AUTH (LOGIN / REGISTER)
     1.1. Prueba de registro de usuario:
@@ -56,32 +56,10 @@ PRUBAS REALIZADAS EN POSTMAN
         - Validaciones funcionando igual que en el login normal
 
 2. PRUEBAS DE POKEMON (CAPTURAR / VER POEKMON DE USUARIO / LIBERAR POKEMON)
-2.1 Prueba captura de pokemon:
-    POST http://localhost:5039/pokemon/capture
-    -200 OK:
-    {
-    "id": 1,
-    "name": "bulbasaur",
-    "category": "Seed Pokémon",
-    "imageURL": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-    "isShiny": false,
-    "level": 1,
-    "ownerId": 2
-    }
-    - Comprobadas validaciones, es necesario poner todos los campos
-    - 409 Conflict si el usuario ya tiene el pokemon:
-    {
-    "message": "User already has this pokemon."
-    }
-    - 400 Bad request si el algoritmo no captura el pokemon:
-    {
-    "message": "Pokemon capture failed."
-    }
-2.2 Prueba ver los pokemon del usuario
-    GET http://localhost:5039/pokemon
-    - 200OK:
-    [
-    {
+    2.1 Prueba captura de pokemon:
+        POST http://localhost:5039/pokemon/capture
+        -200 OK:
+        {
         "id": 1,
         "name": "bulbasaur",
         "category": "Seed Pokémon",
@@ -89,15 +67,48 @@ PRUBAS REALIZADAS EN POSTMAN
         "isShiny": false,
         "level": 1,
         "ownerId": 2
-    },
-    {
-        "id": 2,
-        "name": "ivysaur",
-        "category": "Seed Pokémon",
-        "imageURL": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/2.png",
-        "isShiny": true,
-        "level": 60,
-        "ownerId": 2
-    }
-    ]
-    - ERROR DETECTADO: 401 Si el token esta caducado no dice nada, solo error
+        }
+        - Comprobadas validaciones, es necesario poner todos los campos
+        - 409 Conflict si el usuario ya tiene el pokemon:
+        {
+        "message": "User already has this pokemon."
+        }
+        - 400 Bad request si el algoritmo no captura el pokemon:
+        {
+        "message": "Pokemon capture failed."
+        }
+    2.2 Prueba ver los pokemon del usuario
+        GET http://localhost:5039/pokemon
+        - 200OK:
+        [
+        {
+            "id": 1,
+            "name": "bulbasaur",
+            "category": "Seed Pokémon",
+            "imageURL": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+            "isShiny": false,
+            "level": 1,
+            "ownerId": 2
+        },
+        {
+            "id": 2,
+            "name": "ivysaur",
+            "category": "Seed Pokémon",
+            "imageURL": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/2.png",
+            "isShiny": true,
+            "level": 60,
+            "ownerId": 2
+        }
+        ]
+        - ERROR DETECTADO: 401 Si el token esta caducado no dice nada, solo error
+    2.3 Prueba de liberar pokemon
+        - SOLO LO PUEDE HACER UN ADMIN
+        - Cambiamos el controller para hacerlo mas sencillo y funcional pudiendo el usuario liberar pokemons
+        DELETE http://localhost:5039/pokemon/release/{pokemonID}
+        - 200 OK solo devuelve true, cambiamos esto para que devuelva más informacion:
+
+
+
+ERRORES POR VER: 
+    - Si no tienes token 401 sin mensaje
+    - Liberar pokemon solo devuelve true

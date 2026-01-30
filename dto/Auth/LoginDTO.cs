@@ -7,8 +7,8 @@ namespace Pokemon.dto.auth
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+        
         [Required]
-        [StringLength(50, MinimumLength = 13)]
         public string Password { get; set; }
 
         public LoginDTO(string email, string password)

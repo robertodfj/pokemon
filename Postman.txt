@@ -23,3 +23,15 @@ PRUBAS REALIZADAS EN POSTMAN
     }
     - Usuario hace login correctamente
     - Error 401 si no existe email y password
+
+    2.1 Prueba login admin
+    {
+    "email": "admin@pokemon.com",
+    "password": "admin123"
+    }
+    - Aparece actualmente error 400: 
+        "The field Password must be a string with a minimum length of 13 and a maximum length of 50."
+        Este error ocurre por que en el SeedData añadimos la contraseña del admin y es muy 
+        pequeña para las validaciones dto
+    - 
+    

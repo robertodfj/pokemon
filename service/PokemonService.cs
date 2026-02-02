@@ -97,17 +97,17 @@ namespace Pokemon.service
             }).ToList();
         }
 
-        public async Task<bool> DeletePokemon(int pokemonId, int userId)
+        public async Task<model.Pokemon> DeletePokemon(int pokemonId, int userId)
         {
             var pokemon = await _context.Pokemons.FirstOrDefaultAsync(p => p.Id == pokemonId && p.OwnerId == userId);
             if (pokemon == null)
             {
-                return false;
+                throw new NotFoundException("Pokemon not found for this user.");
             }
 
             _context.Pokemons.Remove(pokemon);
             await _context.SaveChangesAsync();
-            return true;
+            return pokemon;
         }
 
         public async Task<bool> HasUserPokemon(int pokemonId, int userId)

@@ -97,7 +97,7 @@ namespace Pokemon.service
             }).ToList();
         }
 
-        public async Task<model.Pokemon> DeletePokemon(int pokemonId, int userId)
+        public async Task<PokemonResponseDTO> DeletePokemon(int pokemonId, int userId)
         {
             var pokemon = await _context.Pokemons.FirstOrDefaultAsync(p => p.Id == pokemonId && p.OwnerId == userId);
             if (pokemon == null)
@@ -107,7 +107,16 @@ namespace Pokemon.service
 
             _context.Pokemons.Remove(pokemon);
             await _context.SaveChangesAsync();
-            return pokemon;
+            return new PokemonResponseDTO()
+            {
+                Id = pokemon.Id,
+                Name = pokemon.Name,
+                Category = pokemon.Category,
+                ImageURL = pokemon.ImageURL,
+                IsShiny = pokemon.IsShiny,
+                Level = pokemon.Level,
+                OwnerId = pokemon.OwnerId
+            };
         }
 
         public async Task<bool> HasUserPokemon(int pokemonId, int userId)

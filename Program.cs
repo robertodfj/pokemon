@@ -29,6 +29,24 @@ builder.Services.AddAuthentication(options =>
 }).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = ValidateToken.GetTokenValidationParameters(builder.Configuration);
+
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = context =>
+        {
+            context.HandleResponse();
+
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            var response = new
+            {
+                message = "Authentication token is missing or invalid"
+            };
+
+            return context.Response.WriteAsJsonAsync(response);
+        }
+    };
 });
 
 var app = builder.Build();

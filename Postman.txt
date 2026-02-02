@@ -111,7 +111,23 @@
 COMPROBAR ERRORES:
 
 Al no tener token solo devuelve 401:
-    Se cambia el program.cs y se añade la posibilidad de no tener token 
+    Se cambia el program.cs y se añade la posibilidad de no tener token y se prueba:
+    {
+    "message": "Authentication token is missing or invalid"
+    }
 Al liberar pokemon solo devuelve bool:
     Se cambia el pokemon service y se añade la devolucion del pokemon eliminado a traves del dto
-    (cambiar por el pokemon response DTO)
+    devuelve este DTO del pokemon completo borrado:
+    {
+    "id": 2,
+    "name": "ivysaur",
+    "category": "Seed Pokémon",
+    "imageURL": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/2.png",
+    "isShiny": true,
+    "level": 60,
+    "ownerId": 2
+    }
+    Si no existe el pokemon en el usuario devuelve:
+    {
+    "message": "Pokemon not found for this user."
+    }

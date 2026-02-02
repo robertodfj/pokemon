@@ -105,7 +105,7 @@
         - SOLO LO PUEDE HACER UN ADMIN
         - Cambiamos el controller para hacerlo mas sencillo y funcional pudiendo el usuario liberar pokemons
         DELETE http://localhost:5039/pokemon/release/{pokemonID}
-        - 200 OK solo devuelve true, cambiamos esto para que devuelva más informacion:
+        - 200 OK solo devuelve true o false, cambiamos esto para que devuelva más informacion:
 
 
 

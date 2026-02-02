@@ -1,4 +1,5 @@
 *** PRUBAS REALIZADAS EN POSTMAN *** 
+    https://robertodefrutos.postman.co/workspace/Personal-Workspace~54d28531-8963-4457-a4f4-1c5c4fac03ec/collection/45775665-1a6712e5-0fcd-4118-bc7d-912e5e7b2b21?action=share&creator=45775665
 
 1. PRUEBAS DE AUTH (LOGIN / REGISTER)
     1.1. Prueba de registro de usuario:

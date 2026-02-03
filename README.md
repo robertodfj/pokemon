@@ -1,7 +1,7 @@
 <h1 align="center">POKEMON API MINI-GAME 😼</h1>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/robertodfj/pokemon/refs/heads/main/squirtle-squirtle-squad.gif?token=GHSAT0AAAAAADONMK7AYYPO2EZBXMNDJCGW2MA6ZHQ" alt="Gif de un pokemon">
+    <img src="https://raw.githubusercontent.com/robertodfj/pokemon/refs/heads/main/squirtle-squirtle-squad.gif" alt="Gif de un pokemon">
 </p>
 
 <p align="center">

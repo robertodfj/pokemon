@@ -108,17 +108,29 @@ DELETE /pokemon/release/{pokemonID}
 
 La API se puede ejecutar dentro de un contenedor Docker para facilitar el despliegue y la portabilidad.
 #### 1️⃣ Dockerfile
-#### 2️⃣ docker-compose.yml
-#### 3️⃣ Comandos útiles
 ```
-# Construir imagen
-docker build -t pokemon-api .
+# Stage 1: build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
+WORKDIR /src
 
-# Levantar contenedor
-docker run -p 5000:5000 pokemon-api
 
-# Con docker-compose
-docker-compose up --build
+COPY *.csproj ./
+RUN dotnet restore 
+
+COPY . .
+RUN dotnet publish "Pokemon.csproj" -c Release -o /app/publish
+
+# Stage 2: runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview
+WORKDIR /app
+COPY --from=build /app/publish .
+EXPOSE 5039
+ENTRYPOINT ["dotnet", "Pokemon.dll"]
+```
+#### 2️⃣ Utiliza mi imagen de docker
+```
+docker pull robertodfj/pokemon.api:latest
+docker run -p 5039:8080 robertodfj/pokemon.api
 ```
 
 ## 🔹 Pruebas realizadas
